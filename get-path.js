@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Comprehensive Path Helper for SeedDream 4.0 Replicate MCP Server
+ * Comprehensive Path Helper for Qwen Image fal.ai MCP Server
  *
  * Features:
  * - Get absolute path for MCP configuration
@@ -55,7 +55,7 @@ class PathHelper {
   }
 
   async run() {
-    logSection('SeedDream 4.0 Replicate MCP Server - Path Helper');
+    logSection('Qwen Image fal.ai MCP Server - Path Helper');
     
     this.checkSystemRequirements();
     this.validateEnvironment();
@@ -72,10 +72,10 @@ class PathHelper {
     const nodeVersion = process.version;
     const majorVersion = parseInt(nodeVersion.slice(1).split('.')[0]);
     
-    if (majorVersion >= 16) {
+    if (majorVersion >= 18) {
       log('✅', `Node.js version: ${nodeVersion}`, 'green');
     } else {
-      log('❌', `Node.js version: ${nodeVersion} (requires 16+)`, 'red');
+      log('❌', `Node.js version: ${nodeVersion} (requires 18+)`, 'red');
     }
     
     // Check platform
@@ -119,15 +119,15 @@ class PathHelper {
     }
     
     // Check environment variables
-    const replicateToken = process.env.REPLICATE_API_TOKEN;
-    if (replicateToken) {
-      if (replicateToken.startsWith('r8_')) {
-        log('✅', 'REPLICATE_API_TOKEN is set and valid format', 'green');
+    const falKey = process.env.FAL_KEY;
+    if (falKey) {
+      if (falKey.length > 10) {
+        log('✅', 'FAL_KEY is set and appears valid', 'green');
       } else {
-        log('⚠️', 'REPLICATE_API_TOKEN format may be invalid', 'yellow');
+        log('⚠️', 'FAL_KEY format may be invalid (seems too short)', 'yellow');
       }
     } else {
-      log('⚠️', 'REPLICATE_API_TOKEN not set', 'yellow');
+      log('⚠️', 'FAL_KEY not set', 'yellow');
     }
   }
 
@@ -156,11 +156,11 @@ class PathHelper {
     // Basic configuration
     const basicConfig = {
       mcpServers: {
-        seedream: {
+        "qwen-image": {
           command: "node",
           args: [this.buildPath],
           env: {
-            REPLICATE_API_TOKEN: "r8_your_replicate_token_here"
+            FAL_KEY: "your_fal_key_here"
           },
           disabled: false,
           alwaysAllow: []
@@ -171,11 +171,11 @@ class PathHelper {
     // Development configuration
     const devConfig = {
       mcpServers: {
-        seedream: {
+        "qwen-image-dev": {
           command: "node",
           args: [this.buildPath],
           env: {
-            REPLICATE_API_TOKEN: "r8_your_replicate_token_here",
+            FAL_KEY: "your_fal_key_here",
             NODE_ENV: "development",
             LOG_LEVEL: "debug"
           },
@@ -188,14 +188,15 @@ class PathHelper {
     // Production configuration
     const prodConfig = {
       mcpServers: {
-        seedream: {
+        "qwen-image-prod": {
           command: "node",
           args: [this.buildPath],
           env: {
-            REPLICATE_API_TOKEN: "r8_your_replicate_token_here",
+            FAL_KEY: "your_fal_key_here",
             NODE_ENV: "production",
             LOG_LEVEL: "info",
-            MAX_CONCURRENT_REQUESTS: "3"
+            MAX_CONCURRENT_REQUESTS: "3",
+            REQUEST_TIMEOUT: "300000"
           },
           disabled: false,
           alwaysAllow: ["generate_image"],
@@ -236,12 +237,12 @@ class PathHelper {
     log('  ', 'Cons: Manual updates, path-dependent', 'yellow');
     
     log('\n📦', 'NPX Deployment (Recommended):', 'bright');
-    log('  ', 'Command: npx -y https://github.com/PierrunoYT/seedream-v4-replicate-mcp-server.git', 'white');
+    log('  ', 'Command: npx -y https://github.com/PierrunoYT/qwen-image-fal-mcp-server.git', 'white');
     log('  ', 'Pros: Auto-updates, universal, no local install', 'green');
     log('  ', 'Cons: Requires internet, less control', 'yellow');
     
     log('\n🐳', 'Docker Deployment:', 'bright');
-    log('  ', 'Command: docker run -e REPLICATE_API_TOKEN=token seedream-replicate-mcp', 'white');
+    log('  ', 'Command: docker run -e FAL_KEY=your_key qwen-image-fal-mcp', 'white');
     log('  ', 'Pros: Isolated, consistent environment', 'green');
     log('  ', 'Cons: Docker overhead, more complex setup', 'yellow');
   }
@@ -257,21 +258,21 @@ class PathHelper {
     log('  ', '• Restart MCP client after config changes', 'white');
     log('  ', '• Check file permissions', 'white');
     
-    log('\n❓', 'API token errors:', 'yellow');
-    log('  ', '• Get token from https://replicate.com/account', 'white');
-    log('  ', '• Verify token starts with "r8_"', 'white');
-    log('  ', '• Check token has sufficient credits', 'white');
-    log('  ', '• Ensure token is in environment variables', 'white');
+    log('\n❓', 'API key errors:', 'yellow');
+    log('  ', '• Get key from https://fal.ai/dashboard/keys', 'white');
+    log('  ', '• Verify key format is correct', 'white');
+    log('  ', '• Check account has sufficient credits', 'white');
+    log('  ', '• Ensure key is in environment variables', 'white');
     
     log('\n❓', 'Generation timeouts:', 'yellow');
     log('  ', '• Increase timeout in configuration', 'white');
     log('  ', '• Check internet connection', 'white');
     log('  ', '• Try simpler prompts', 'white');
-    log('  ', '• Verify Replicate service status', 'white');
+    log('  ', '• Verify fal.ai service status', 'white');
     
     log('\n🆘', 'Getting Help:', 'bright');
-    log('  ', '• GitHub Issues: https://github.com/PierrunoYT/seedream-v4-replicate-mcp-server/issues', 'white');
-    log('  ', '• Run health check: npm run test:server --health-check', 'white');
+    log('  ', '• GitHub Issues: https://github.com/PierrunoYT/qwen-image-fal-mcp-server/issues', 'white');
+    log('  ', '• Run health check: npm run health-check', 'white');
     log('  ', '• Check logs in logs/ directory', 'white');
   }
 }
@@ -281,7 +282,7 @@ const args = process.argv.slice(2);
 
 if (args.includes('--help') || args.includes('-h')) {
   console.log(`
-${colorize('SeedDream 4.0 Replicate MCP Server - Path Helper', 'bright')}
+${colorize('Qwen Image fal.ai MCP Server - Path Helper', 'bright')}
 
 Usage:
   node get-path.js [options]
@@ -308,11 +309,11 @@ if (args.includes('--json')) {
   if (existsSync(helper.buildPath)) {
     const config = {
       mcpServers: {
-        seedream: {
+        "qwen-image": {
           command: "node",
           args: [helper.buildPath],
           env: {
-            REPLICATE_API_TOKEN: "r8_your_replicate_token_here"
+            FAL_KEY: "your_fal_key_here"
           }
         }
       }
